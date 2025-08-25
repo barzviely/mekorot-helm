@@ -1,6 +1,6 @@
 # ArgoCD "App of Apps" Pattern - Complete GitOps Automation
 # This is the ONLY application you need to apply manually once
-# It manages all other applications including ArgoCD itself
+# It manages ArgoCD which then manages all other applications
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application

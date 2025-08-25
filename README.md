@@ -14,7 +14,7 @@ Instead of creating separate Helm charts for each application, we use:
 ```
 argocd-k8s-environments/
 ├── charts/
-│   └── mekorot/                       # ✅ Universal production-ready chart
+│   └── mekorot/                      # ✅ Universal production-ready chart (ONLY chart here)
 │       ├── Chart.yaml
 │       ├── values.yaml               # Default values with feature flags
 │       └── templates/
@@ -30,17 +30,19 @@ argocd-k8s-environments/
 │           └── _helpers.tpl         # Template helpers
 └── environments/
     └── central-workload/
-        ├── argocd/                   # 🔄 ArgoCD Self-Management (GitOps)
-        │   ├── argocd.yaml           # ArgoCD manages itself
+        ├── app-of-apps.yaml          # 🎯 Root GitOps Application
+        ├── argocd/                   # 🔄 ArgoCD Self-Management
+        │   ├── argocd.yaml           # ArgoCD Application (uses local chart)
+        │   ├── bootstrap-secret.yaml # SSH secret via External Secrets
         │   ├── ssh-secret-template.yaml # SSH secret template
         │   └── values/
-        │       └── values.yaml       # ArgoCD configuration
+        │       └── values.yaml       # Environment-specific ArgoCD config
         ├── sample-app/
-        │   ├── sample-app.yaml       # ArgoCD Application
+        │   ├── sample-app.yaml       # ArgoCD Application (uses Mekorot chart)
         │   └── values/
         │       └── values.yaml       # App-specific values
         └── sample-app-1/
-            ├── sample-app-1.yaml     # ArgoCD Application  
+            ├── sample-app-1.yaml     # ArgoCD Application (uses Mekorot chart)
             └── values/
                 └── values.yaml       # App-specific values
 ```

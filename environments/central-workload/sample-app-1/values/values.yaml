@@ -3,7 +3,6 @@ nameOverride: "sample-app-1"
 fullnameOverride: ""
 
 app:
-  # Deployment configuration
   deployment:
     enabled: true
     name: "sample-app-1"
@@ -11,27 +10,17 @@ app:
       app: sample-app-1
       tier: frontend
       autoscaling: enabled
-      
-  # Replica and scaling (HPA enabled)
   replicaCount: 3
   autoscaling:
     enabled: true  # Note: mekorot chart needs HPA template to be added
-    
-  # Container image
   image:
     repository: nginx
     tag: "1.25-alpine"
     pullPolicy: IfNotPresent
-    
-  # Container port  
   containerPort: 80
-  
-  # Health checks
   livenessProbe: "/"
   readinessProbe: "/health"
   initialDelaySeconds: 3
-  
-  # Resources
   resources:
     requests:
       cpu: 50m
@@ -39,14 +28,10 @@ app:
     limits:
       cpu: 150m
       memory: 128Mi
-      
-  # Node selection (using default nodes)
   nodeSelector:
     type: default
   affinity: {}
   tolerations: []
-  
-  # Service configuration
   service:
     enabled: true
     name: "sample-app-1-service"
@@ -54,8 +39,6 @@ app:
     port: 80
     labels:
       app: sample-app-1
-      
-  # ConfigMap for nginx configuration
   config:
     enabled: true
     data:
@@ -120,34 +103,22 @@ app:
             </div>
         </body>
         </html>
-        
-  # EFS Volume configuration (for configmap mounting)
   efsVolume:
     name: nginx-config
     mountPath: /etc/nginx/conf.d
-    
-  # Ingress (disabled for now)
   ingress:
     enabled: false
-    
-  # Service Account
   serviceAccount:
     create: false
     enabled: false
-    
-  # External Secrets (disabled)
   externalSecret:
     enabled: false
-    
-  # Storage (disabled for this simple example)
   storageClass:
     enabled: false
   persistentVolume:
     enabled: false
   persistentVolumeClaim:
     enabled: false
-    
-  # Pod settings
   podAnnotations: {}
   podSecurityContext: {}
   securityContext: {}

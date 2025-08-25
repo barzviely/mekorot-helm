@@ -1,0 +1,30 @@
+# ArgoCD "App of Apps" Pattern - Complete GitOps Automation
+# This is the ONLY application you need to apply manually once
+# It manages all other applications including ArgoCD itself
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argo
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:barzviely/mekorot-helm.git
+    targetRevision: HEAD
+    path: environments/central-workload
+    directory:
+      recurse: true
+      include: "*/**.yaml"
+      exclude: "app-of-apps.yaml" # Prevent self-reference
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

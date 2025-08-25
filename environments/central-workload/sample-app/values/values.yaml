@@ -1,0 +1,86 @@
+# Values for sample-app using Mekorot chart structure
+nameOverride: "sample-app"
+fullnameOverride: ""
+
+app:
+  # Deployment configuration
+  deployment:
+    enabled: true
+    name: "sample-app"
+    labels:
+      app: sample-app
+      tier: frontend
+      
+  # Replica and scaling
+  replicaCount: 2
+  autoscaling:
+    enabled: false
+    
+  # Container image
+  image:
+    repository: nginxdemos/hello
+    tag: "latest"
+    pullPolicy: IfNotPresent
+    
+  # Container port
+  containerPort: 80
+  
+  # Health checks
+  livenessProbe: "/"
+  readinessProbe: "/"
+  initialDelaySeconds: 5
+  
+  # Resources
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+      
+  # Node selection
+  nodeSelector:
+    type: default
+  affinity: {}
+  tolerations: []
+  
+  # Service configuration
+  service:
+    enabled: true
+    name: "sample-app-service"
+    type: ClusterIP
+    port: 80
+    labels:
+      app: sample-app
+      
+  # Ingress (disabled for now)
+  ingress:
+    enabled: false
+    
+  # ConfigMap (disabled for now)  
+  config:
+    enabled: false
+    
+  # Service Account
+  serviceAccount:
+    create: false
+    enabled: false
+    
+  # External Secrets (disabled)
+  externalSecret:
+    enabled: false
+    
+  # Storage (disabled)
+  storageClass:
+    enabled: false
+  persistentVolume:
+    enabled: false
+  persistentVolumeClaim:
+    enabled: false
+    
+  # Pod settings
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  imagePullSecrets: []

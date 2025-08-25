@@ -1,0 +1,17 @@
+{{- if .Values.app.persistentVolume.enabled -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.app.persistentVolume.efs.pvName }}
+spec:
+  capacity:
+    storage: {{ .Values.app.persistentVolume.efs.storage }}
+  volumeMode: {{ .Values.app.persistentVolume.efs.valueMode | default "Filesystem" }}
+  accessModes:
+    - {{ .Values.app.persistentVolume.efs.accessModes | default "ReadWriteMany" | quote }}
+  persistentVolumeReclaimPolicy: {{ .Values.app.persistentVolume.efs.reclaimPolicy | default "Retain" | quote }}
+  storageClassName: {{ .Values.app.persistentVolume.efs.storageClassName }}
+  csi:
+    driver: {{ .Values.app.persistentVolume.efs.csiDriver | default "efs.csi.aws.com" | quote }}
+    volumeHandle: {{ printf "%s::%s" .Values.app.persistentVolume.efs.fileSystemId .Values.app.persistentVolume.efs.accessPointId }}
+{{- end }}

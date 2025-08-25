@@ -1,0 +1,46 @@
+{{- if .Values.storageClass }}
+{{- range $class := .Values.storageClass.classes }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ $class.name | quote }}
+  {{- if $class.annotations }}
+  annotations:
+    {{- range $k, $v := $class.annotations }}
+    {{ $k | quote }}: {{ $v | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if $class.labels }}
+  labels:
+    {{- range $k, $v := $class.labels }}
+    {{ $k | quote }}: {{ $v | quote }}
+    {{- end }}
+  {{- end }}
+provisioner: {{ $class.provisioner | quote }}
+{{- if $class.allowVolumeExpansion }}
+allowVolumeExpansion: {{ $class.allowVolumeExpansion }}
+{{- end }}
+{{- if $class.reclaimPolicy }}
+reclaimPolicy: {{ $class.reclaimPolicy | quote }}
+{{- end }}
+volumeBindingMode: {{ $class.volumeBindingMode | default "WaitForFirstConsumer" | quote }}
+{{- if $class.mountOptions }}
+mountOptions:
+  {{- range $class.mountOptions }}
+  - {{ . | quote }}
+  {{- end }}
+{{- end }}
+parameters:
+  type: {{ $class.type | quote }}
+  {{- if $class.fsType }}
+  fsType: {{ $class.fsType | quote }}
+  {{- end }}
+  {{- if $class.iopsPerGB }}
+  iopsPerGB: {{ $class.iopsPerGB | quote }}
+  {{- end }}
+  {{- if $class.encrypted }}
+  encrypted: {{ $class.encrypted | quote }}
+  {{- end }}
+---
+{{- end }}
+{{- end }} 

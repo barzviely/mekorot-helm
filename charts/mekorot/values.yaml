@@ -1,0 +1,21 @@
+affinity: {}
+
+app:
+  deployment:
+    enabled: false
+  ingress:
+    enabled: false
+  externalSecret:
+    enabled: false
+  storageClass:
+    enabled: false
+  service:
+    enabled: false
+  serviceAccount:
+    create: false
+  config:
+    enabled: false
+  persistentVolume:
+    enabled: false
+  persistentVolumeClaim:
+    enabled: false

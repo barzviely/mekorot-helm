@@ -1,0 +1,15 @@
+apiVersion: v2
+name: mekorot
+description: Universal Helm chart for deploying applications on Kubernetes
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - microservice
+  - web-app
+  - api
+  - common
+  - mekorot
+maintainers:
+  - name: Platform Team
+    email: platform@mekorot.co.il

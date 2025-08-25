@@ -1,0 +1,14 @@
+{{- if .Values.app.persistentVolumeClaim.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.app.persistentVolumeClaim.efs.pvcName }}
+spec:
+  volumeName: {{ .Values.app.persistentVolume.efs.pvName }} 
+  accessModes:
+    - {{ .Values.app.persistentVolumeClaim.efs.accessModes | default "ReadWriteMany" | quote }}
+  storageClassName: {{ .Values.app.persistentVolumeClaim.efs.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.app.persistentVolumeClaim.efs.storage }}
+{{- end }}

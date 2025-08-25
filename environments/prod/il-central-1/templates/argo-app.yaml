@@ -1,0 +1,79 @@
+{{- $allApps := merge .Values.customArgocdApplications .Values.argocdApplications }}
+{{- range $app := $allApps }}
+{{ if not .disable }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: argo
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  {{- with $app.argocdImageUpdater }}
+  annotations:
+  {{- $alias := .ecr_prefix }}
+    argocd-image-updater.argoproj.io/image-list: {{ .imageList | quote }}
+    argocd-image-updater.argoproj.io/{{ $alias }}.update-strategy: {{ default "latest" .updateStrategy | quote }}
+    argocd-image-updater.argoproj.io/{{ $alias }}.allow-tags: {{ .allowTags | quote }}
+    argocd-image-updater.argoproj.io/{{ $alias }}.platforms: {{ default "linux/amd64" (join "," .platforms) | quote }}
+    argocd-image-updater.argoproj.io/write-back-method: {{ default "git" .writeBackMethod | quote }}
+    argocd-image-updater.argoproj.io/git-branch: {{ default "main" .gitBranch | quote }}
+    argocd-image-updater.argoproj.io/{{ $alias }}.helm.image-name: {{ .helm.imageName | quote }}
+    argocd-image-updater.argoproj.io/{{ $alias }}.helm.image-tag:  {{ .helm.imageTag | quote }}
+    argocd-image-updater.argoproj.io/pull-secret: {{ default "ext:/scripts/auth1.sh" .pullSecret | quote }}
+    argocd-image-updater.argoproj.io/write-back-target: {{ .writeBackTarget | quote }}
+  {{- end }}
+spec:
+  project: default
+  {{- if .chart }}
+  sources:
+  - repoURL:  {{ .repoURL }}
+    targetRevision: {{ .targetRevision }}
+    chart: {{ .chart | quote }}
+    helm:
+      valueFiles:
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ $.Values.global.region }}/{{ .name }}/{{ .name }}.yaml
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ $.Values.global.region }}/{{ .name }}/{{ .name }}.yaml
+      ignoreMissingValueFiles: true
+  - repoURL:  {{ $.Values.global.spec.source.repoURL }}
+    targetRevision: {{ $.Values.global.spec.source.targetRevision }}
+    ref: values
+  {{- if .includeTemplate }}
+  - repoURL:  {{ default $.Values.global.spec.source.repoURL  }}
+    targetRevision: {{ default $.Values.global.spec.source.targetRevision  }}
+    path: {{ default $.Values.global.spec.source.path }}
+    helm:
+      valueFiles:
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ $.Values.global.region }}/{{ .name }}/{{ .name }}.yaml
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ $.Values.global.region }}/{{ .name }}/{{ .name }}.yaml
+      ignoreMissingValueFiles: true
+  {{- end }}
+  {{- else }}
+  source:
+    repoURL:  {{ default $.Values.global.spec.source.repoURL .repoURL }}
+    targetRevision: {{ default $.Values.global.spec.source.targetRevision .targetRevision }}
+    path: {{ default $.Values.global.spec.source.path .path }}
+    helm:
+      valueFiles:
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ $.Values.global.region }}/{{ .name }}/{{ .name }}.yaml
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ $.Values.global.region }}/{{ .name }}/{{ .name }}.yaml
+      ignoreMissingValueFiles: true
+  {{- end }}
+  destination:
+    namespace: {{ default $.Values.global.tag .namespace }}
+    server: {{ $.Values.global.spec.destination.server }}
+  syncPolicy:
+    {{- if not .disableAutomated }}
+    automated:
+      prune: true
+      selfHeal: true
+    {{- end }}
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+      jqPathExpressions:
+        - .spec.metrics[].resource.name | select((. == "cpu") or (. == "memory"))
+---
+{{- end }}
+{{- end }}

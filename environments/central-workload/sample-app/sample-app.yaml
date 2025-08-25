@@ -9,14 +9,14 @@ spec:
   project: default
   sources:
     # Mekorot chart source (production-ready universal chart)
-    - repoURL: https://github.com/yourusername/argocd-k8s-environments.git  # Update with your repo
+    - repoURL: git@github.com:barzviely/mekorot-helm.git
       targetRevision: HEAD
       path: charts/mekorot
       helm:
         valueFiles:
           - $values/environments/central-workload/sample-app/values/values.yaml
     # Values source  
-    - repoURL: https://github.com/yourusername/argocd-k8s-environments.git  # Update with your repo
+    - repoURL: git@github.com:barzviely/mekorot-helm.git
       targetRevision: HEAD
       ref: values
   destination:

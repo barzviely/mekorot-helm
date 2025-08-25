@@ -30,6 +30,11 @@ argocd-k8s-environments/
 │           └── _helpers.tpl         # Template helpers
 └── environments/
     └── central-workload/
+        ├── argocd/                   # 🔄 ArgoCD Self-Management (GitOps)
+        │   ├── argocd.yaml           # ArgoCD manages itself
+        │   ├── ssh-secret-template.yaml # SSH secret template
+        │   └── values/
+        │       └── values.yaml       # ArgoCD configuration
         ├── sample-app/
         │   ├── sample-app.yaml       # ArgoCD Application
         │   └── values/
@@ -39,6 +44,48 @@ argocd-k8s-environments/
             └── values/
                 └── values.yaml       # App-specific values
 ```
+
+## 🔄 GitOps Pattern: ArgoCD Self-Management
+
+This repository follows **GitOps best practices** where:
+- **Terraform** manages infrastructure (EKS, initial ArgoCD bootstrap)
+- **GitOps repository** manages applications and ArgoCD's own configuration
+- **ArgoCD manages itself** through GitOps (App of Apps pattern)
+
+### 🛠️ GitOps Setup
+
+1. **Initial Bootstrap** (Terraform):
+   ```bash
+   # Terraform deploys basic ArgoCD instance
+   terraform apply
+   ```
+
+2. **SSH Secret Setup** (Manual - for security):
+   ```bash
+   # Apply SSH secret for private repository access
+   kubectl create secret generic repo-mekorot-helm \
+     --from-literal=type=git \
+     --from-literal=url=git@github.com:barzviely/mekorot-helm.git \
+     --from-file=sshPrivateKey=~/.ssh/id_ed25519 \
+     -n argo
+   
+   kubectl label secret repo-mekorot-helm argocd.argoproj.io/secret-type=repository -n argo
+   ```
+
+3. **ArgoCD Self-Management**:
+   ```bash
+   # Deploy ArgoCD self-management application
+   kubectl apply -f environments/central-workload/argocd/argocd.yaml
+   ```
+
+4. **Deploy Applications**:
+   ```bash
+   # Deploy sample applications
+   kubectl apply -f environments/central-workload/sample-app/
+   kubectl apply -f environments/central-workload/sample-app-1/
+   ```
+
+After this setup, **ArgoCD manages all applications including itself** via GitOps!
 
 ## 🚀 Benefits of This Approach
 
@@ -51,6 +98,12 @@ argocd-k8s-environments/
 - Update chart once, affects all apps
 - Centralized security and best practices
 - Easy to add new features (monitoring, security contexts, etc.)
+
+### ✅ GitOps Compliant
+- Infrastructure as Code (Terraform)
+- Configuration as Code (Git)
+- Declarative deployments (ArgoCD)
+- Self-healing applications
 
 ### ✅ Flexible
 - Override any value per application

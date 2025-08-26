@@ -16,11 +16,11 @@ customArgocdApplications:
    targetRevision: main
    namespace: sample-app
  
-#  sample-apps:
-#    name: sample-apps
-#    path: charts/mekorot
-#    targetRevision: main
-#    namespace: sample-apps
+ sample-apps:
+   name: sample-apps
+   path: charts/mekorot
+   targetRevision: main
+   namespace: sample-apps
 
 argocdApplications:
  argocd-image-updater:

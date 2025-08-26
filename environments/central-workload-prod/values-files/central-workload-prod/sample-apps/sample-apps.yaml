@@ -1,7 +1,3 @@
-# Values for sample-apps-1 using Mekorot chart structure
-nameOverride: "sample-apps-1"
-fullnameOverride: ""
-
 app:
   deployment:
     enabled: true

@@ -1,5 +1,5 @@
 # Values for sample-app-1 using Mekorot chart structure
-nameOverride: "sample-app-1-1"
+nameOverride: "sample-app-1"
 fullnameOverride: ""
 
 app:

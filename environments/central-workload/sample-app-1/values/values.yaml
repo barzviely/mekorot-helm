@@ -14,13 +14,13 @@ app:
   autoscaling:
     enabled: true  # Note: mekorot chart needs HPA template to be added
   image:
-    repository: nginx
-    tag: "1.25-alpine"
+    repository: nginxdemos/hello
+    tag: "latest"
     pullPolicy: IfNotPresent
   containerPort: 80
   livenessProbe: "/"
-  readinessProbe: "/health"
-  initialDelaySeconds: 3
+  readinessProbe: "/"
+  initialDelaySeconds: 10
   resources:
     requests:
       cpu: 50m
@@ -40,70 +40,7 @@ app:
     labels:
       app: sample-app-1
   config:
-    enabled: true
-    name: "sample-app-1-config"
-    data:
-      default.conf: |
-        server {
-            listen 80;
-            server_name localhost;
-            
-            location / {
-                root /usr/share/nginx/html;
-                index index.html index.htm;
-                add_header X-App-Name "Sample App 1 - Mekorot Chart" always;
-            }
-            
-            location /health {
-                access_log off;
-                return 200 "healthy from mekorot chart\n";
-                add_header Content-Type text/plain;
-            }
-        }
-      index.html: |
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Sample App 1 - Mekorot Chart</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; background: #f0f0f0; }
-                .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-                h1 { color: #333; }
-                .info { background: #e8f4fd; padding: 15px; border-left: 4px solid #1976d2; margin: 20px 0; }
-                .success { background: #e8f5e8; border-left: 4px solid #4caf50; }
-                .mekorot { background: #fff3e0; border-left: 4px solid #ff9800; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>🚀 Sample App 1</h1>
-                <p>This application is deployed using the <strong>Mekorot production-ready Helm chart</strong>!</p>
-                <div class="info mekorot">
-                    <strong>🎯 Mekorot Chart Features:</strong>
-                    <ul>
-                        <li>✅ Deployment, Service, Ingress</li>
-                        <li>✅ ConfigMap & External Secrets</li>
-                        <li>✅ PersistentVolumes & EFS support</li>
-                        <li>✅ Service Accounts & RBAC</li>
-                        <li>✅ Storage Classes & PVC</li>
-                        <li>✅ Feature flags for everything</li>
-                    </ul>
-                </div>
-                <div class="info success">
-                    <strong>✅ Current Configuration:</strong>
-                    <ul>
-                        <li>Nginx with custom config via ConfigMap</li>
-                        <li>Health checks on /health endpoint</li>
-                        <li>Resource limits: 50m CPU, 64Mi memory</li>
-                        <li>Node selector: default</li>
-                        <li>Ready for HPA scaling</li>
-                    </ul>
-                </div>
-                <p><strong>Health Check:</strong> <a href="/health">/health</a></p>
-                <p><em>Powered by Mekorot Universal Chart 🎯</em></p>
-            </div>
-        </body>
-        </html>
+    enabled: false
   ingress:
     enabled: false
   serviceAccount:

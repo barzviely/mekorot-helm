@@ -103,9 +103,6 @@ app:
             </div>
         </body>
         </html>
-  efsVolume:
-    name: nginx-config
-    mountPath: /etc/nginx/conf.d
   ingress:
     enabled: false
   serviceAccount:

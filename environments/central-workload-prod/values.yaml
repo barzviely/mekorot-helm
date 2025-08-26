@@ -22,6 +22,16 @@ customArgocdApplications:
    targetRevision: main
    namespace: sample-app-1
 
+argocdApplications:
+ argocd-image-updater:
+   name: argocd-image-updater
+   chart: argocd-image-updater
+   repoURL: https://argoproj.github.io/argo-helm
+   targetRevision: 0.12.2
+   namespace: argo
+   includeTemplate: false
+
+
 # argocdApplications:
 #  external-dns:
 #    name: external-dns

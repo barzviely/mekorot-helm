@@ -1,0 +1,90 @@
+global:
+  region: il-central-1
+  tag: arcgis-prod
+  spec:
+    destination:
+      server: https://kubernetes.default.svc
+    source:
+      repoURL: https://github.com/barzviely/mekorot-helm.git
+      targetRevision: main
+      path: charts/mekorot/
+
+customArgocdApplications:
+ sample-app:
+   name: sample-app
+   path: charts/mekorot
+   targetRevision: main
+   namespace: sample-app
+ 
+ sample-apps:
+   name: sample-apps
+   path: charts/mekorot
+   targetRevision: main
+   namespace: sample-apps
+
+argocdApplications:
+ argocd-image-updater:
+   name: argocd-image-updater
+   chart: argocd-image-updater
+   repoURL: https://argoproj.github.io/argo-helm
+   targetRevision: 0.12.2
+   namespace: argo
+   includeTemplate: false
+
+
+# argocdApplications:
+#  external-dns:
+#    name: external-dns
+#    chart: external-dns
+#    repoURL: https://kubernetes-sigs.github.io/external-dns
+#    targetRevision: 1.14.5
+#    namespace: tools
+#    includeTemplate: false
+
+#  alb-ingress-controller:
+#    name: alb-ingress-controller
+#    chart: aws-load-balancer-controller
+#    repoURL: https://aws.github.io/eks-charts
+#    targetRevision: 1.4.8
+#    namespace: tools
+#    includeTemplate: false
+
+#  kube-state-metrics:
+#    name: kube-state-metrics
+#    chart: kube-state-metrics
+#    repoURL: https://prometheus-community.github.io/helm-charts
+#    targetRevision: 5.8.1
+#    namespace: tools
+#    includeTemplate: false
+
+#  aws-ebs-csi-driver:
+#    name: aws-ebs-csi-driver
+#    chart: aws-ebs-csi-driver
+#    repoURL: https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+#    targetRevision: 2.42.0
+#    namespace: tools
+#    includeTemplate: false
+
+# #  aws-efs-csi-driver:
+# #    name: aws-efs-csi-driver
+# #    chart: aws-efs-csi-driver
+# #    repoURL: https://kubernetes-sigs.github.io/aws-efs-csi-driver
+# #    targetRevision: 3.1.8
+# #    namespace: tools
+# #    includeTemplate: false
+
+#  reloader:
+#    name: reloader
+#    chart: reloader
+#    repoURL: https://stakater.github.io/stakater-charts
+#    targetRevision: 2.1.4
+#    namespace: tools
+#    includeTemplate: false
+
+#  argocd-image-updater:
+#    name: argocd-image-updater
+#    chart: argocd-image-updater
+#    repoURL: https://argoproj.github.io/argo-helm
+#    targetRevision: 0.12.2
+#    namespace: argo
+#    includeTemplate: false

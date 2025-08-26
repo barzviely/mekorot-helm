@@ -1,0 +1,55 @@
+app:
+  deployment:
+    enabled: true
+    name: "sample-apps"
+    labels:
+      app: sample-apps
+      tier: frontend
+  replicaCount: 2
+  autoscaling:
+    enabled: false
+  image:
+    repository: nginxdemos/hello
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  containerPort: 80
+  livenessProbe: "/"
+  readinessProbe: "/"
+  initialDelaySeconds: 10
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  nodeSelector:
+    type: default
+  affinity: {}
+  tolerations: []
+  service:
+    enabled: true
+    name: "sample-apps-service"
+    type: ClusterIP
+    port: 80
+    labels:
+      app: sample-apps
+  ingress:
+    enabled: false
+  config:
+    enabled: false
+  serviceAccount:
+    create: false
+    enabled: false
+  externalSecret:
+    enabled: false
+  storageClass:
+    enabled: false
+  persistentVolume:
+    enabled: false
+  persistentVolumeClaim:
+    enabled: false
+  podAnnotations: {}
+  podSecurityContext: {}
+  securityContext: {}
+  imagePullSecrets: []

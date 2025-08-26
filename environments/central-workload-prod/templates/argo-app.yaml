@@ -1,0 +1,65 @@
+{{- $allApps := merge .Values.customArgocdApplications .Values.argocdApplications }}
+{{- range $app := $allApps }}
+{{ if not .disable }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: argo
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  {{- if .chart }}
+  sources:
+  - repoURL:  {{ .repoURL }}
+    targetRevision: {{ .targetRevision }}
+    chart: {{ .chart | quote }}
+    helm:
+      valueFiles:
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ .name }}/{{ .name }}.yaml
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ .name }}/{{ .name }}.yaml
+      ignoreMissingValueFiles: true
+  - repoURL:  {{ $.Values.global.spec.source.repoURL }}
+    targetRevision: {{ $.Values.global.spec.source.targetRevision }}
+    ref: values
+  {{- if .includeTemplate }}
+  - repoURL:  {{ default $.Values.global.spec.source.repoURL  }}
+    targetRevision: {{ default $.Values.global.spec.source.targetRevision  }}
+    path: {{ default $.Values.global.spec.source.path }}
+    helm:
+      valueFiles:
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ .name }}/{{ .name }}.yaml
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ .name }}/{{ .name }}.yaml
+      ignoreMissingValueFiles: true
+  {{- end }}
+  {{- else }}
+  source:
+    repoURL:  {{ default $.Values.global.spec.source.repoURL .repoURL }}
+    targetRevision: {{ default $.Values.global.spec.source.targetRevision .targetRevision }}
+    path: {{ default $.Values.global.spec.source.path .path }}
+    helm:
+      valueFiles:
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ .name }}/{{ .name }}.yaml
+      - $values/environments/values-files/{{ $.Values.global.tag }}/{{ .name }}/{{ .name }}.yaml
+      ignoreMissingValueFiles: true
+  {{- end }}
+  destination:
+    namespace: {{ default $.Values.global.tag .namespace }}
+    server: {{ $.Values.global.spec.destination.server }}
+  syncPolicy:
+    {{- if not .disableAutomated }}
+    automated:
+      prune: true
+      selfHeal: true
+    {{- end }}
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+      jqPathExpressions:
+        - .spec.metrics[].resource.name | select((. == "cpu") or (. == "memory"))
+---
+{{- end }}
+{{- end }}

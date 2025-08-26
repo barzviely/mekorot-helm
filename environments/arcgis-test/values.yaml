@@ -1,25 +1,25 @@
 global:
-  region: il-central-1
+  region: eu-west-1
   tag: arcgis-test
   spec:
     destination:
       server: https://kubernetes.default.svc
     source:
       repoURL: https://github.com/barzviely/mekorot-helm.git
-      targetRevision: main
+      targetRevision: josh
       path: charts/mekorot/
 
 customArgocdApplications:
  sample-app:
    name: sample-app
    path: charts/mekorot
-   targetRevision: main
+   targetRevision: josh
    namespace: sample-app
  
  sample-apps:
    name: sample-apps
    path: charts/mekorot
-   targetRevision: main
+   targetRevision: josh
    namespace: sample-apps
 
 argocdApplications:

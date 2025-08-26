@@ -1,13 +1,13 @@
-# Values for sample-app-1 using Mekorot chart structure
-nameOverride: "sample-app-1"
+# Values for sample-apps-1 using Mekorot chart structure
+nameOverride: "sample-apps-1"
 fullnameOverride: ""
 
 app:
   deployment:
     enabled: true
-    name: "sample-app-1"
+    name: "sample-apps-1"
     labels:
-      app: sample-app-1
+      app: sample-apps-1
       tier: frontend
   replicaCount: 2
   autoscaling:
@@ -33,11 +33,11 @@ app:
   tolerations: []
   service:
     enabled: true
-    name: "sample-app-1-service"
+    name: "sample-apps-1-service"
     type: ClusterIP
     port: 80
     labels:
-      app: sample-app-1
+      app: sample-apps-1
   ingress:
     enabled: false
   config:

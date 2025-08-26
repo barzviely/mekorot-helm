@@ -21,6 +21,10 @@ customArgocdApplications:
    path: charts/mekorot
    targetRevision: main
    namespace: sample-apps
+   
+ quick-test:
+   name: quick-test
+   path: charts/mekorot   
 
 argocdApplications:
  argocd-image-updater:

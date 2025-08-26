@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sample-app
+  name: sample-app-1
   namespace: argo
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -14,14 +14,14 @@ spec:
       path: charts/mekorot
       helm:
         valueFiles:
-          - $values/environments/central-workload/sample-app/values/values.yaml
+          - $values/apps/central-workload/envs/test/sample-app-1/values/values.yaml
     # Values source  
     - repoURL: https://github.com/barzviely/mekorot-helm.git
       targetRevision: HEAD
       ref: values
   destination:
     server: https://kubernetes.default.svc
-    namespace: sample-app
+    namespace: sample-app-1
   syncPolicy:
     automated:
       prune: true

@@ -41,6 +41,7 @@ app:
       app: sample-app-1
   config:
     enabled: true
+    name: "sample-app-1-config"
     data:
       default.conf: |
         server {
